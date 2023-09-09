@@ -18,7 +18,7 @@ contract BasicBank3  {
     }
 
     function deposit() public payable {
-        require(msg.value >= 1); //gönderilen eth miktarı 1 den fazla olmalı
+        require(msg.value >= 1 ether); //gönderilen eth miktarı 1 den fazla olmalı
         userFunds[msg.sender] += msg.value; //işlemi yapan kullanıcının adres değeri msg.value kadar artırıldı.
     }
 
