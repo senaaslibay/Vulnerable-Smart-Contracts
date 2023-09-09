@@ -18,26 +18,32 @@ contract BasicBank3  {
     }
 
     function deposit() public payable {
-        require(msg.value >= 1); //gönderilen eth miktarı 1 den fazla olmalı
+        //external olabilir
+        require(msg.value >= 1 ether); //gönderilen eth miktarı 1 den fazla olmalı
         userFunds[msg.sender] += msg.value; //işlemi yapan kullanıcının adres değeri msg.value kadar artırıldı.
+        //msg.value değerinin eksi olması durumu var mı bilmiyrum eğer öyleyse uint sıkıntısı olabilir.
     }
 
     function withdraw(uint _amount) external payable {
         require(getBalance(msg.sender) >= _amount);
-        payable (msg.sender).transfer(_amount);
+        payable (msg.sender).transfer(_amount);//burda payable demek gerekiyo mu bilmiyorum fonksiyon zaten payable.
         userFunds[msg.sender] -= _amount;
         userFunds[commissionCollector] += _amount/100; //%1 komisyon olarak commission_taker hesabına ekleniyor.
+        //burada collectedComission değişkeni kullanılabilirmiş direkt atmak yerine
     }   
 
     function getBalance(address _user) public view returns(uint) {
+        //bu da belki onlycommissionCollector modifier istiyor olabilir.
         return userFunds[_user];
     }
 
     function getCommissionCollector() public view returns(address) {
+        //external olabilir
         return commissionCollector;
     }
 
     function transfer(address _userToSend, uint _amount) external{
+        //require gerekiyor amount gönderenin amaount'undan küçük olmalı
         userFunds[_userToSend] += _amount;
         userFunds[msg.sender] -= _amount;
     }
@@ -47,6 +53,8 @@ contract BasicBank3  {
     }
 
     function collectCommission() external {
+        //onlycomissioncolletor modifier'ı olması gerekiyor
+        //collectedComission kullanılmıyo yani içi dolu değil
         userFunds[msg.sender] += collectedComission;
         collectedComission = 0;
     }
